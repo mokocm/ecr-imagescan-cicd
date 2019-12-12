@@ -67,7 +67,7 @@ jobs:
         echo "::set-output digest="$(docker images --no-trunc -q $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG)
     - name: Image Scan
       id: image-scan
-      uses: mokocm/ecr-imagescan-action@v1
+      uses: mokocm/ecr-imagescan-action@v2
       with:
         image-digest: ""
         image-tag: ${{ github.sha }}
