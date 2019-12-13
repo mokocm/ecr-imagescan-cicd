@@ -64,9 +64,19 @@ jobs:
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
-        echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
-        echo "::set-output digest=$(docker images --no-trunc -q $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG)"
+        docker images --digests
 
+        echo ::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        echo ::set-output name=digest::$(docker images --no-trunc -q $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG)
+        echo ::set-output name=repository-name::$ECR_REPOSITORY
+    - name: Image Scan
+      id: image-scan
+      uses: mokocm/ecr-imagescan-action@v3
+      with:
+        image-digest: ${{ steps.build-image.outputs.digest }}
+        image-tag: ${{ github.sha }}
+        repository-name: ${{ steps.build-image.outputs.repository-name }}
+        trigger-severity: "CRITICAL"
     - name: Fill in the new image ID in the Amazon ECS task definition
       id: task-def
       uses: aws-actions/amazon-ecs-render-task-definition@v1
