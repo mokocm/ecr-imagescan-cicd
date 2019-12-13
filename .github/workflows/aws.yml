@@ -69,7 +69,7 @@ jobs:
       id: image-scan
       uses: mokocm/ecr-imagescan-action@v2
       with:
-        image-digest: ""
+        image-digest: ${{ steps.build-image.outputs.digest }}
         image-tag: ${{ github.sha }}
         repository-name: ${{ steps.login-ecr.outputs.registry }}
         trigger-severity: "CRITICAL"
