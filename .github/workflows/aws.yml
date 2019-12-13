@@ -63,8 +63,9 @@ jobs:
         # be deployed to ECS.
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+
         echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
-        echo "::set-output digest="$(docker images --no-trunc -q $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG)
+        echo "::set-output digest=$(docker images --no-trunc -q $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG)"
     - name: Image Scan
       id: image-scan
       uses: mokocm/ecr-imagescan-action@v2
